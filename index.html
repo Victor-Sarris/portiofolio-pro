@@ -878,13 +878,145 @@
         height: auto;
         min-height: 260px;
       }
-      @media (max-width: 768px) {
-        .project-card.featured {
-          grid-template-columns: 1fr;
-        }
-        .project-card.featured .project-img {
-          height: 200px;
-        }
+
+      /* ── CAROUSEL ── */
+      .carousel-track {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .carousel-slide {
+        min-width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center top;
+        display: block;
+        flex-shrink: 0;
+      }
+      .carousel-slide-bg {
+        min-width: 100%;
+        height: 100%;
+        flex-shrink: 0;
+      }
+      .carousel-dots {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 5px;
+        z-index: 5;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .project-card:hover .carousel-dots {
+        opacity: 1;
+      }
+      .carousel-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        transition:
+          background 0.3s,
+          transform 0.3s;
+      }
+      .carousel-dot.active {
+        background: var(--accent);
+        transform: scale(1.4);
+      }
+      .carousel-label {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 0.6rem;
+        letter-spacing: 0.1em;
+        color: rgba(255, 255, 255, 0.5);
+        z-index: 5;
+        opacity: 0;
+        transition: opacity 0.3s;
+        text-transform: uppercase;
+      }
+      .project-card:hover .carousel-label {
+        opacity: 1;
+      }
+
+      /* ── HAMBURGER MENU ── */
+      .nav-hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        cursor: pointer;
+        padding: 4px;
+        background: none;
+        border: none;
+        z-index: 200;
+      }
+      .nav-hamburger span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: var(--text);
+        transition:
+          transform 0.3s,
+          opacity 0.3s;
+        transform-origin: center;
+      }
+      .nav-hamburger.open span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+      }
+      .nav-hamburger.open span:nth-child(2) {
+        opacity: 0;
+        transform: scaleX(0);
+      }
+      .nav-hamburger.open span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+      }
+      .nav-mobile-menu {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(8, 11, 16, 0.97);
+        backdrop-filter: blur(20px);
+        z-index: 150;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2.5rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+      .nav-mobile-menu.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .nav-mobile-menu a {
+        font-family: var(--font-display);
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--text);
+        text-decoration: none;
+        letter-spacing: 0.04em;
+        transition: color 0.2s;
+      }
+      .nav-mobile-menu a:hover {
+        color: var(--accent);
+      }
+      .nav-mobile-cta {
+        margin-top: 1rem;
+        font-size: 0.85rem !important;
+        font-family: var(--font-mono) !important;
+        letter-spacing: 0.1em !important;
+        text-transform: uppercase;
+        color: var(--accent) !important;
+        border: 1px solid var(--accent);
+        padding: 0.7rem 2rem;
+        font-weight: 400 !important;
       }
 
       /* ── EXPERIENCE ── */
@@ -1147,14 +1279,42 @@
 
       /* RESPONSIVE */
       @media (max-width: 900px) {
+        body {
+          cursor: auto;
+        }
+        #cursor {
+          display: none;
+        }
+
         nav {
           padding: 1rem 1.5rem;
         }
         .nav-links {
           display: none;
         }
+        .nav-cta {
+          display: none;
+        }
+        .nav-hamburger {
+          display: flex;
+        }
+        .nav-mobile-menu {
+          display: flex;
+        }
         #hero {
           padding: 7rem 1.5rem 4rem;
+          text-align: center;
+        }
+        .hero-ctas {
+          flex-direction: column;
+          align-items: center;
+        }
+        .btn-primary,
+        .btn-outline {
+          width: 100%;
+          max-width: 280px;
+          text-align: center;
+          justify-content: center;
         }
         #about {
           grid-template-columns: 1fr;
@@ -1162,19 +1322,72 @@
           padding: 5rem 1.5rem;
         }
         #skills,
-        #projects,
         #experience,
         #contact {
           padding: 5rem 1.5rem;
         }
+        #projects {
+          padding: 5rem 1.5rem;
+        }
         .stats-bar {
           grid-template-columns: repeat(2, 1fr);
+        }
+        .stat-item {
+          padding: 1.5rem 1rem;
+        }
+        .stat-num {
+          font-size: 2rem;
+        }
+        .projects-grid {
+          grid-template-columns: 1fr;
+        }
+        .project-card.featured {
+          grid-template-columns: 1fr;
+        }
+        .project-card.featured .project-img {
+          height: 220px;
+        }
+        .skills-grid {
+          grid-template-columns: 1fr;
         }
         footer {
           flex-direction: column;
           gap: 0.5rem;
           text-align: center;
           padding: 1.5rem;
+        }
+        .contact-links {
+          flex-direction: column;
+          align-items: center;
+        }
+        .contact-link {
+          width: 100%;
+          max-width: 320px;
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .hero-name {
+          font-size: clamp(2.8rem, 13vw, 4rem);
+        }
+        .section-title {
+          font-size: clamp(1.6rem, 7vw, 2rem);
+        }
+        .about-title {
+          font-size: clamp(1.6rem, 7vw, 2rem);
+        }
+        .contact-title {
+          font-size: clamp(2rem, 9vw, 3rem);
+        }
+        .stat-num {
+          font-size: 1.8rem;
+        }
+        .stat-label {
+          font-size: 0.6rem;
+        }
+        .project-img {
+          height: 180px;
         }
       }
     </style>
@@ -1200,7 +1413,24 @@
         <li><a href="#contact">Contato</a></li>
       </ul>
       <a href="mailto:devvictorsarris@gmail.com" class="nav-cta">Hire me</a>
+      <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
     </nav>
+
+    <!-- MOBILE MENU -->
+    <div class="nav-mobile-menu" id="mobileMenu">
+      <a href="#about" class="mobile-link">Sobre</a>
+      <a href="#skills" class="mobile-link">Skills</a>
+      <a href="#projects" class="mobile-link">Projetos</a>
+      <a href="#experience" class="mobile-link">Experiência</a>
+      <a href="#contact" class="mobile-link">Contato</a>
+      <a
+        href="mailto:devvictorsarris@gmail.com"
+        class="mobile-link nav-mobile-cta"
+        >Hire me</a
+      >
+    </div>
 
     <main>
       <!-- ── HERO ── -->
@@ -1476,19 +1706,63 @@
         </div>
         <div class="projects-grid">
           <!-- FEATURED -->
-          <div class="project-card featured reveal">
+          <div
+            class="project-card featured reveal"
+            data-carousel='["img/projetos/Totem de Reconhecimento/Totem-Prototipo.jpeg","img/projetos/Totem de Reconhecimento/Totem-Prototipo.jpeg","img/projetos/Totem de Reconhecimento/Totem-Prototipo.jpeg"]'
+          >
             <div class="project-img">
               <div
                 class="project-img-bg"
                 style="background: linear-gradient(135deg, #0a1628, #1a2d4a)"
               ></div>
-              <div class="project-img-overlay"></div>
-              <span class="project-img-icon">
+              <div class="carousel-track">
                 <img
+                  class="carousel-slide"
                   src="img/projetos/Totem de Reconhecimento/Totem-Prototipo.jpeg"
-                  alt="Imagem do Totem"
+                  alt="Totem slide 1"
                 />
-              </span>
+                <div
+                  class="carousel-slide-bg"
+                  style="
+                    background: linear-gradient(135deg, #0d1e38, #1a3055);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <span
+                    style="
+                      font-size: 3rem;
+                      filter: drop-shadow(0 0 20px rgba(99, 195, 255, 0.4));
+                    "
+                    >🤖</span
+                  >
+                </div>
+                <div
+                  class="carousel-slide-bg"
+                  style="
+                    background: linear-gradient(135deg, #091520, #142840);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <span
+                    style="
+                      font-size: 3rem;
+                      filter: drop-shadow(0 0 20px rgba(99, 195, 255, 0.4));
+                    "
+                    >🔐</span
+                  >
+                </div>
+              </div>
+              <div class="project-img-overlay"></div>
+              <div class="carousel-dots">
+                <span class="carousel-dot active"></span>
+                <span class="carousel-dot"></span>
+                <span class="carousel-dot"></span>
+              </div>
+              <span class="carousel-label">hover para navegar</span>
             </div>
             <div class="project-body">
               <span class="project-type" style="color: var(--accent)"
@@ -1531,13 +1805,54 @@
                 class="project-img-bg"
                 style="background: linear-gradient(135deg, #1a0a2e, #2d1a4a)"
               ></div>
-              <div class="project-img-overlay"></div>
-              <span class="project-img-icon">
+              <div class="carousel-track">
                 <img
+                  class="carousel-slide"
                   src="./img/projetos/ACCONTROLLER/AC-CONTROLLER.png"
-                  alt=""
+                  alt="AC-Controller"
                 />
-              </span>
+                <div
+                  class="carousel-slide-bg"
+                  style="
+                    background: linear-gradient(135deg, #200a3a, #351550);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <span
+                    style="
+                      font-size: 3rem;
+                      filter: drop-shadow(0 0 20px rgba(167, 139, 250, 0.5));
+                    "
+                    >❄️</span
+                  >
+                </div>
+                <div
+                  class="carousel-slide-bg"
+                  style="
+                    background: linear-gradient(135deg, #180830, #281040);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <span
+                    style="
+                      font-size: 3rem;
+                      filter: drop-shadow(0 0 20px rgba(167, 139, 250, 0.5));
+                    "
+                    >🔌</span
+                  >
+                </div>
+              </div>
+              <div class="project-img-overlay"></div>
+              <div class="carousel-dots">
+                <span class="carousel-dot active"></span>
+                <span class="carousel-dot"></span>
+                <span class="carousel-dot"></span>
+              </div>
+              <span class="carousel-label">hover para navegar</span>
             </div>
             <div class="project-body">
               <span class="project-type" style="color: var(--accent2)"
@@ -1566,10 +1881,54 @@
                 class="project-img-bg"
                 style="background: linear-gradient(135deg, #0a2818, #1a4a2d)"
               ></div>
+              <div class="carousel-track">
+                <img
+                  class="carousel-slide"
+                  src="./img/projetos/ResourceFlow/imagecopy.png"
+                  alt="ResourceFlow"
+                />
+                <div
+                  class="carousel-slide-bg"
+                  style="
+                    background: linear-gradient(135deg, #0d3020, #1a5535);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <span
+                    style="
+                      font-size: 3rem;
+                      filter: drop-shadow(0 0 20px rgba(52, 211, 153, 0.5));
+                    "
+                    >📅</span
+                  >
+                </div>
+                <div
+                  class="carousel-slide-bg"
+                  style="
+                    background: linear-gradient(135deg, #0a2818, #154025);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <span
+                    style="
+                      font-size: 3rem;
+                      filter: drop-shadow(0 0 20px rgba(52, 211, 153, 0.5));
+                    "
+                    >⚡</span
+                  >
+                </div>
+              </div>
               <div class="project-img-overlay"></div>
-              <span class="project-img-icon">
-                <img src="./img/projetos/ResourceFlow/imagecopy.png" alt="" />
-              </span>
+              <div class="carousel-dots">
+                <span class="carousel-dot active"></span>
+                <span class="carousel-dot"></span>
+                <span class="carousel-dot"></span>
+              </div>
+              <span class="carousel-label">hover para navegar</span>
             </div>
             <div class="project-body">
               <span class="project-type" style="color: var(--accent3)"
@@ -1597,10 +1956,54 @@
                 class="project-img-bg"
                 style="background: linear-gradient(135deg, #2a1200, #4a2800)"
               ></div>
+              <div class="carousel-track">
+                <img
+                  class="carousel-slide"
+                  src="./img/projetos/RetroLab/Lobby.png"
+                  alt="RetroLab"
+                />
+                <div
+                  class="carousel-slide-bg"
+                  style="
+                    background: linear-gradient(135deg, #351800, #553000);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <span
+                    style="
+                      font-size: 3rem;
+                      filter: drop-shadow(0 0 20px rgba(249, 115, 22, 0.5));
+                    "
+                    ><img src="img/projetos/RetroLab/Catalogo.png" alt=""
+                  /></span>
+                </div>
+                <div
+                  class="carousel-slide-bg"
+                  style="
+                    background: linear-gradient(135deg, #281000, #402000);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <span
+                    style="
+                      font-size: 3rem;
+                      filter: drop-shadow(0 0 20px rgba(249, 115, 22, 0.5));
+                    "
+                    ><img src="./img/projetos/RetroLab/Game.png" alt=""
+                  /></span>
+                </div>
+              </div>
               <div class="project-img-overlay"></div>
-              <span class="project-img-icon">
-                <img src="./img/projetos/RetroLab/Lobby.png" alt="" />
-              </span>
+              <div class="carousel-dots">
+                <span class="carousel-dot active"></span>
+                <span class="carousel-dot"></span>
+                <span class="carousel-dot"></span>
+              </div>
+              <span class="carousel-label">hover para navegar</span>
             </div>
             <div class="project-body">
               <span class="project-type" style="color: var(--accent4)"
@@ -1627,10 +2030,54 @@
                 class="project-img-bg"
                 style="background: linear-gradient(135deg, #0a1428, #142440)"
               ></div>
+              <div class="carousel-track">
+                <img
+                  class="carousel-slide"
+                  src="./img/projetos/Therapy/image.png"
+                  alt="Therapy"
+                />
+                <div
+                  class="carousel-slide-bg"
+                  style="
+                    background: linear-gradient(135deg, #0d1a32, #182d50);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <span
+                    style="
+                      font-size: 3rem;
+                      filter: drop-shadow(0 0 20px rgba(99, 195, 255, 0.5));
+                    "
+                    >🧠</span
+                  >
+                </div>
+                <div
+                  class="carousel-slide-bg"
+                  style="
+                    background: linear-gradient(135deg, #091020, #10203a);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <span
+                    style="
+                      font-size: 3rem;
+                      filter: drop-shadow(0 0 20px rgba(99, 195, 255, 0.5));
+                    "
+                    >💬</span
+                  >
+                </div>
+              </div>
               <div class="project-img-overlay"></div>
-              <span class="project-img-icon">
-                <img src="./img/projetos/Therapy/image.png" alt="" />
-              </span>
+              <div class="carousel-dots">
+                <span class="carousel-dot active"></span>
+                <span class="carousel-dot"></span>
+                <span class="carousel-dot"></span>
+              </div>
+              <span class="carousel-label">hover para navegar</span>
             </div>
             <div class="project-body">
               <span class="project-type" style="color: var(--accent)"
@@ -1967,6 +2414,50 @@
         });
         card.addEventListener("mouseleave", () => {
           card.style.transform = "";
+        });
+      });
+
+      // ── CAROUSEL ON HOVER ──
+      document.querySelectorAll(".project-card").forEach((card) => {
+        const track = card.querySelector(".carousel-track");
+        const dots = card.querySelectorAll(".carousel-dot");
+        if (!track) return;
+
+        const slides = track.children;
+        const total = slides.length;
+        let current = 0;
+        let interval = null;
+
+        function goTo(idx) {
+          current = (idx + total) % total;
+          track.style.transform = `translateX(-${current * 100}%)`;
+          dots.forEach((d, i) => d.classList.toggle("active", i === current));
+        }
+
+        card.addEventListener("mouseenter", () => {
+          interval = setInterval(() => goTo(current + 1), 1200);
+        });
+        card.addEventListener("mouseleave", () => {
+          clearInterval(interval);
+          goTo(0);
+        });
+      });
+
+      // ── HAMBURGER MENU ──
+      const hamburger = document.getElementById("hamburger");
+      const mobileMenu = document.getElementById("mobileMenu");
+
+      hamburger.addEventListener("click", () => {
+        const isOpen = hamburger.classList.toggle("open");
+        mobileMenu.classList.toggle("open", isOpen);
+        document.body.style.overflow = isOpen ? "hidden" : "";
+      });
+
+      document.querySelectorAll(".mobile-link").forEach((link) => {
+        link.addEventListener("click", () => {
+          hamburger.classList.remove("open");
+          mobileMenu.classList.remove("open");
+          document.body.style.overflow = "";
         });
       });
     </script>
