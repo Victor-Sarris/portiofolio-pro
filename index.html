@@ -844,28 +844,90 @@
       }
       .project-links {
         display: flex;
-        gap: 0.8rem;
-      }
-      .project-link {
-        font-size: 0.7rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--text2);
-        text-decoration: none;
-        transition: color 0.2s;
-        display: flex;
+        flex-wrap: wrap;
+        gap: 0.7rem;
         align-items: center;
-        gap: 0.4rem;
+      }
+      /* BOTÃO PRIMÁRIO (Ver projeto / demo) */
+      .project-link {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: var(--bg);
+        background: var(--accent);
+        text-decoration: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.62rem 1.05rem;
+        border: 1px solid var(--accent);
+        clip-path: polygon(7px 0, 100% 0, calc(100% - 7px) 100%, 0 100%);
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s,
+          background 0.2s,
+          color 0.2s,
+          border-color 0.2s;
+      }
+      .project-link svg {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
       }
       .project-link:hover {
-        color: var(--accent);
+        transform: translateY(-2px);
+        background: #8ad2ff;
+        border-color: #8ad2ff;
+        box-shadow: 0 8px 22px rgba(99, 195, 255, 0.38);
       }
-      .project-link::before {
-        content: "→";
-        transition: transform 0.2s;
+      /* BOTÃO SECUNDÁRIO (GitHub) */
+      .project-link.gh {
+        background: transparent;
+        color: var(--text);
+        border-color: var(--border2);
       }
-      .project-link:hover::before {
-        transform: translateX(3px);
+      .project-link.gh:hover {
+        background: var(--surface2);
+        color: var(--accent2);
+        border-color: var(--accent2);
+        box-shadow: 0 8px 22px rgba(167, 139, 250, 0.25);
+      }
+      /* ETIQUETA DE STATUS (não clicável) */
+      .project-status {
+        font-family: var(--font-mono);
+        font-size: 0.66rem;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.55rem 0.9rem;
+        color: var(--accent4);
+        border: 1px dashed rgba(249, 115, 22, 0.5);
+        background: rgba(249, 115, 22, 0.07);
+      }
+      .project-status::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--accent4);
+        box-shadow: 0 0 8px var(--accent4);
+        animation: pulse 2s infinite;
+      }
+      .project-status.internal {
+        color: var(--text2);
+        border-color: var(--border2);
+        background: rgba(99, 195, 255, 0.05);
+      }
+      .project-status.internal::before {
+        background: var(--text2);
+        box-shadow: none;
+        animation: none;
       }
 
       /* FEATURED PROJECT */
@@ -878,13 +940,148 @@
         height: auto;
         min-height: 260px;
       }
-      @media (max-width: 768px) {
-        .project-card.featured {
-          grid-template-columns: 1fr;
-        }
-        .project-card.featured .project-img {
-          height: 200px;
-        }
+
+      /* ── CAROUSEL ── */
+      .carousel-track {
+        position: absolute;
+        inset: 0;
+      }
+      .carousel-slide,
+      .carousel-slide-bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+      .carousel-slide {
+        object-fit: cover;
+        object-position: center top;
+        display: block;
+      }
+      .carousel-slide.active,
+      .carousel-slide-bg.active {
+        opacity: 1;
+      }
+      .carousel-dots {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 5px;
+        z-index: 5;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .project-card:hover .carousel-dots {
+        opacity: 1;
+      }
+      .carousel-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        transition:
+          background 0.3s,
+          transform 0.3s;
+      }
+      .carousel-dot.active {
+        background: var(--accent);
+        transform: scale(1.4);
+      }
+      .carousel-label {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 0.6rem;
+        letter-spacing: 0.1em;
+        color: rgba(255, 255, 255, 0.5);
+        z-index: 5;
+        opacity: 0;
+        transition: opacity 0.3s;
+        text-transform: uppercase;
+      }
+      .project-card:hover .carousel-label {
+        opacity: 1;
+      }
+
+      /* ── HAMBURGER MENU ── */
+      .nav-hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        cursor: pointer;
+        padding: 4px;
+        background: none;
+        border: none;
+        z-index: 200;
+      }
+      .nav-hamburger span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: var(--text);
+        transition:
+          transform 0.3s,
+          opacity 0.3s;
+        transform-origin: center;
+      }
+      .nav-hamburger.open span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+      }
+      .nav-hamburger.open span:nth-child(2) {
+        opacity: 0;
+        transform: scaleX(0);
+      }
+      .nav-hamburger.open span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+      }
+      .nav-mobile-menu {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(8, 11, 16, 0.97);
+        backdrop-filter: blur(20px);
+        z-index: 150;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2.5rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+      .nav-mobile-menu.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .nav-mobile-menu a {
+        font-family: var(--font-display);
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--text);
+        text-decoration: none;
+        letter-spacing: 0.04em;
+        transition: color 0.2s;
+      }
+      .nav-mobile-menu a:hover {
+        color: var(--accent);
+      }
+      .nav-mobile-cta {
+        margin-top: 1rem;
+        font-size: 0.85rem !important;
+        font-family: var(--font-mono) !important;
+        letter-spacing: 0.1em !important;
+        text-transform: uppercase;
+        color: var(--accent) !important;
+        border: 1px solid var(--accent);
+        padding: 0.7rem 2rem;
+        font-weight: 400 !important;
       }
 
       /* ── EXPERIENCE ── */
@@ -1147,14 +1344,42 @@
 
       /* RESPONSIVE */
       @media (max-width: 900px) {
+        body {
+          cursor: auto;
+        }
+        #cursor {
+          display: none;
+        }
+
         nav {
           padding: 1rem 1.5rem;
         }
         .nav-links {
           display: none;
         }
+        .nav-cta {
+          display: none;
+        }
+        .nav-hamburger {
+          display: flex;
+        }
+        .nav-mobile-menu {
+          display: flex;
+        }
         #hero {
           padding: 7rem 1.5rem 4rem;
+          text-align: center;
+        }
+        .hero-ctas {
+          flex-direction: column;
+          align-items: center;
+        }
+        .btn-primary,
+        .btn-outline {
+          width: 100%;
+          max-width: 280px;
+          text-align: center;
+          justify-content: center;
         }
         #about {
           grid-template-columns: 1fr;
@@ -1162,19 +1387,72 @@
           padding: 5rem 1.5rem;
         }
         #skills,
-        #projects,
         #experience,
         #contact {
           padding: 5rem 1.5rem;
         }
+        #projects {
+          padding: 5rem 1.5rem;
+        }
         .stats-bar {
           grid-template-columns: repeat(2, 1fr);
+        }
+        .stat-item {
+          padding: 1.5rem 1rem;
+        }
+        .stat-num {
+          font-size: 2rem;
+        }
+        .projects-grid {
+          grid-template-columns: 1fr;
+        }
+        .project-card.featured {
+          grid-template-columns: 1fr;
+        }
+        .project-card.featured .project-img {
+          height: 220px;
+        }
+        .skills-grid {
+          grid-template-columns: 1fr;
         }
         footer {
           flex-direction: column;
           gap: 0.5rem;
           text-align: center;
           padding: 1.5rem;
+        }
+        .contact-links {
+          flex-direction: column;
+          align-items: center;
+        }
+        .contact-link {
+          width: 100%;
+          max-width: 320px;
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .hero-name {
+          font-size: clamp(2.8rem, 13vw, 4rem);
+        }
+        .section-title {
+          font-size: clamp(1.6rem, 7vw, 2rem);
+        }
+        .about-title {
+          font-size: clamp(1.6rem, 7vw, 2rem);
+        }
+        .contact-title {
+          font-size: clamp(2rem, 9vw, 3rem);
+        }
+        .stat-num {
+          font-size: 1.8rem;
+        }
+        .stat-label {
+          font-size: 0.6rem;
+        }
+        .project-img {
+          height: 180px;
         }
       }
     </style>
@@ -1200,7 +1478,24 @@
         <li><a href="#contact">Contato</a></li>
       </ul>
       <a href="mailto:devvictorsarris@gmail.com" class="nav-cta">Hire me</a>
+      <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
     </nav>
+
+    <!-- MOBILE MENU -->
+    <div class="nav-mobile-menu" id="mobileMenu">
+      <a href="#about" class="mobile-link">Sobre</a>
+      <a href="#skills" class="mobile-link">Skills</a>
+      <a href="#projects" class="mobile-link">Projetos</a>
+      <a href="#experience" class="mobile-link">Experiência</a>
+      <a href="#contact" class="mobile-link">Contato</a>
+      <a
+        href="mailto:devvictorsarris@gmail.com"
+        class="mobile-link nav-mobile-cta"
+        >Hire me</a
+      >
+    </div>
 
     <main>
       <!-- ── HERO ── -->
@@ -1476,19 +1771,51 @@
         </div>
         <div class="projects-grid">
           <!-- FEATURED -->
-          <div class="project-card featured reveal">
+          <div
+            class="project-card featured reveal"
+            data-carousel='["img/projetos/Totem de Reconhecimento/totem-interface.jpg","img/projetos/Totem de Reconhecimento/Totem-Prototipo.jpeg"]'
+          >
             <div class="project-img">
               <div
                 class="project-img-bg"
                 style="background: linear-gradient(135deg, #0a1628, #1a2d4a)"
               ></div>
-              <div class="project-img-overlay"></div>
-              <span class="project-img-icon">
+              <div class="carousel-track">
                 <img
-                  src="img/projetos/Totem de Reconhecimento/Totem-Prototipo.jpeg"
-                  alt="Imagem do Totem"
+                  class="carousel-slide"
+                  src="img/projetos/Totem de Reconhecimento/totem-interface.jpg"
+                  alt="Totem — interface web do sistema"
                 />
-              </span>
+                <img
+                  class="carousel-slide"
+                  src="img/projetos/Totem de Reconhecimento/Totem-Prototipo.jpeg"
+                  alt="Totem — protótipo físico"
+                />
+                <div
+                  class="carousel-slide-bg"
+                  style="
+                    background: linear-gradient(135deg, #091520, #142840);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <span
+                    style="
+                      font-size: 3rem;
+                      filter: drop-shadow(0 0 20px rgba(99, 195, 255, 0.4));
+                    "
+                    >🔐</span
+                  >
+                </div>
+              </div>
+              <div class="project-img-overlay"></div>
+              <div class="carousel-dots">
+                <span class="carousel-dot active"></span>
+                <span class="carousel-dot"></span>
+                <span class="carousel-dot"></span>
+              </div>
+              <span class="carousel-label">hover para navegar</span>
             </div>
             <div class="project-body">
               <span class="project-type" style="color: var(--accent)"
@@ -1512,15 +1839,36 @@
                   class="project-link"
                   target="_blank"
                   rel="external"
-                  >Ver projeto</a
                 >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                    />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                  Ver projeto
+                </a>
                 <a
                   href="https://github.com/Victor-Sarris/Totem-Reconhecimento-Facial"
-                  class="project-link"
+                  class="project-link gh"
                   target="_blank"
                   rel="external"
-                  >GitHub</a
                 >
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                      d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2.9-.3 2-.4 3-.4s2.1.1 3 .4c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"
+                    />
+                  </svg>
+                  GitHub
+                </a>
               </div>
             </div>
           </div>
@@ -1531,8 +1879,54 @@
                 class="project-img-bg"
                 style="background: linear-gradient(135deg, #1a0a2e, #2d1a4a)"
               ></div>
+              <div class="carousel-track">
+                <img
+                  class="carousel-slide"
+                  src="./img/projetos/ACCONTROLLER/AC-CONTROLLER.png"
+                  alt="AC-Controller"
+                />
+                <div
+                  class="carousel-slide-bg"
+                  style="
+                    background: linear-gradient(135deg, #200a3a, #351550);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <span
+                    style="
+                      font-size: 3rem;
+                      filter: drop-shadow(0 0 20px rgba(167, 139, 250, 0.5));
+                    "
+                    >❄️</span
+                  >
+                </div>
+                <div
+                  class="carousel-slide-bg"
+                  style="
+                    background: linear-gradient(135deg, #180830, #281040);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <span
+                    style="
+                      font-size: 3rem;
+                      filter: drop-shadow(0 0 20px rgba(167, 139, 250, 0.5));
+                    "
+                    >🔌</span
+                  >
+                </div>
+              </div>
               <div class="project-img-overlay"></div>
-              <span class="project-img-icon">❄️</span>
+              <div class="carousel-dots">
+                <span class="carousel-dot active"></span>
+                <span class="carousel-dot"></span>
+                <span class="carousel-dot"></span>
+              </div>
+              <span class="carousel-label">hover para navegar</span>
             </div>
             <div class="project-body">
               <span class="project-type" style="color: var(--accent2)"
@@ -1549,8 +1943,9 @@
                 ><span>Sensores</span>
               </div>
               <div class="project-links">
-                <a href="#" class="project-link">Ver projeto</a>
-                <a href="#" class="project-link">GitHub</a>
+                <span class="project-status internal"
+                  >Projeto interno · Instituto Afeto</span
+                >
               </div>
             </div>
           </div>
@@ -1561,8 +1956,54 @@
                 class="project-img-bg"
                 style="background: linear-gradient(135deg, #0a2818, #1a4a2d)"
               ></div>
+              <div class="carousel-track">
+                <img
+                  class="carousel-slide"
+                  src="./img/projetos/ResourceFlow/imagecopy.png"
+                  alt="ResourceFlow"
+                />
+                <div
+                  class="carousel-slide-bg"
+                  style="
+                    background: linear-gradient(135deg, #0d3020, #1a5535);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <span
+                    style="
+                      font-size: 3rem;
+                      filter: drop-shadow(0 0 20px rgba(52, 211, 153, 0.5));
+                    "
+                    >📅</span
+                  >
+                </div>
+                <div
+                  class="carousel-slide-bg"
+                  style="
+                    background: linear-gradient(135deg, #0a2818, #154025);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <span
+                    style="
+                      font-size: 3rem;
+                      filter: drop-shadow(0 0 20px rgba(52, 211, 153, 0.5));
+                    "
+                    >⚡</span
+                  >
+                </div>
+              </div>
               <div class="project-img-overlay"></div>
-              <span class="project-img-icon">📅</span>
+              <div class="carousel-dots">
+                <span class="carousel-dot active"></span>
+                <span class="carousel-dot"></span>
+                <span class="carousel-dot"></span>
+              </div>
+              <span class="carousel-label">hover para navegar</span>
             </div>
             <div class="project-body">
               <span class="project-type" style="color: var(--accent3)"
@@ -1579,7 +2020,19 @@
                 ><span>PostgreSQL</span>
               </div>
               <div class="project-links">
-                <a href="#" class="project-link">Ver projeto</a>
+                <a
+                  href="https://github.com/Victor-Sarris/resourceflow-backend"
+                  class="project-link gh"
+                  target="_blank"
+                  rel="external"
+                >
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                      d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2.9-.3 2-.4 3-.4s2.1.1 3 .4c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"
+                    />
+                  </svg>
+                  GitHub
+                </a>
               </div>
             </div>
           </div>
@@ -1590,8 +2043,30 @@
                 class="project-img-bg"
                 style="background: linear-gradient(135deg, #2a1200, #4a2800)"
               ></div>
+              <div class="carousel-track">
+                <img
+                  class="carousel-slide"
+                  src="./img/projetos/RetroLab/retrolab-home.jpg"
+                  alt="RetroLab — tela inicial cyberpunk"
+                />
+                <img
+                  class="carousel-slide"
+                  src="./img/projetos/RetroLab/retrolab-biblioteca.jpg"
+                  alt="RetroLab — biblioteca de clássicos"
+                />
+                <img
+                  class="carousel-slide"
+                  src="./img/projetos/RetroLab/Game.png"
+                  alt="RetroLab — jogo em execução"
+                />
+              </div>
               <div class="project-img-overlay"></div>
-              <span class="project-img-icon">🕹️</span>
+              <div class="carousel-dots">
+                <span class="carousel-dot active"></span>
+                <span class="carousel-dot"></span>
+                <span class="carousel-dot"></span>
+              </div>
+              <span class="carousel-label">hover para navegar</span>
             </div>
             <div class="project-body">
               <span class="project-type" style="color: var(--accent4)"
@@ -1607,7 +2082,41 @@
                 <span>React</span><span>Node.js</span><span>Web Design</span>
               </div>
               <div class="project-links">
-                <a href="#" class="project-link">Ver demo</a>
+                <a
+                  href="https://victor-sarris.github.io/RetroLab/"
+                  class="project-link"
+                  target="_blank"
+                  rel="external"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                    />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                  Ver demo
+                </a>
+                <a
+                  href="https://github.com/Victor-Sarris/RetroLab"
+                  class="project-link gh"
+                  target="_blank"
+                  rel="external"
+                >
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                      d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2.9-.3 2-.4 3-.4s2.1.1 3 .4c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"
+                    />
+                  </svg>
+                  GitHub
+                </a>
               </div>
             </div>
           </div>
@@ -1618,24 +2127,187 @@
                 class="project-img-bg"
                 style="background: linear-gradient(135deg, #0a1428, #142440)"
               ></div>
+              <div class="carousel-track">
+                <img
+                  class="carousel-slide"
+                  src="./img/projetos/Therapy/therapy-especialistas.png"
+                  alt="Therapy — busca de especialistas"
+                />
+                <img
+                  class="carousel-slide"
+                  src="./img/projetos/Therapy/therapy-meet.png"
+                  alt="Therapy — teleconsulta por vídeo (Meet)"
+                />
+                <img
+                  class="carousel-slide"
+                  src="./img/projetos/Therapy/image.png"
+                  alt="Therapy — interface"
+                />
+              </div>
               <div class="project-img-overlay"></div>
-              <span class="project-img-icon">🧠</span>
+              <div class="carousel-dots">
+                <span class="carousel-dot active"></span>
+                <span class="carousel-dot"></span>
+                <span class="carousel-dot"></span>
+              </div>
+              <span class="carousel-label">hover para navegar</span>
             </div>
             <div class="project-body">
               <span class="project-type" style="color: var(--accent)"
-                >UX/UI • Saúde</span
+                >Fullstack • Saúde</span
               >
               <h3 class="project-title">Therapy</h3>
               <p class="project-desc">
-                Protótipo de plataforma de teleconsulta voltada para serviços de
-                saúde mental. Projeto focado em experiência do usuário (UX) e
-                interfaces acessíveis.
+                Plataforma web de atendimento psicológico remoto: busca de
+                especialistas com filtros, teleconsulta por vídeo (Meet),
+                mensagens e agenda. Construída com foco em acessibilidade e
+                usabilidade.
               </p>
               <div class="project-tech">
-                <span>Figma</span><span>UX/UI</span><span>Prototipagem</span>
+                <span>Web App</span><span>Node.js</span><span>Teleconsulta</span
+                ><span>Acessibilidade</span>
               </div>
               <div class="project-links">
-                <a href="#" class="project-link">Ver Figma</a>
+                <a
+                  href="https://github.com/Victor-Sarris/Therapy"
+                  class="project-link gh"
+                  target="_blank"
+                  rel="external"
+                >
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                      d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2.9-.3 2-.4 3-.4s2.1.1 3 .4c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"
+                    />
+                  </svg>
+                  GitHub
+                </a>
+                <a
+                  href="https://www.therapy-up.com.br/"
+                  class="project-link"
+                  target="_blank"
+                  rel="external"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                    />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                  Acessar Site
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- MORTAL KODE -->
+          <div class="project-card reveal">
+            <div class="project-img">
+              <div
+                class="project-img-bg"
+                style="background: linear-gradient(135deg, #2a0a0a, #4a1717)"
+              ></div>
+              <div class="carousel-track">
+                <img
+                  class="carousel-slide"
+                  src="./img/projetos/Mortal-kode/mortal-kode-gameplay.png"
+                  alt="Mortal Kode — gameplay (Sarris vs Sabrina)"
+                />
+                <img
+                  class="carousel-slide"
+                  src="./img/projetos/Mortal-kode/mortal-kode-godot.png"
+                  alt="Mortal Kode — desenvolvimento na Godot Engine"
+                />
+              </div>
+              <div class="project-img-overlay"></div>
+              <div class="carousel-dots">
+                <span class="carousel-dot active"></span>
+                <span class="carousel-dot"></span>
+              </div>
+              <span class="carousel-label">hover para navegar</span>
+            </div>
+            <div class="project-body">
+              <span class="project-type" style="color: var(--accent4)"
+                >Game • Godot Engine</span
+              >
+              <h3 class="project-title">Mortal Kode</h3>
+              <p class="project-desc">
+                Jogo de luta 2D inspirado em Mortal Kombat, feito na Godot
+                Engine (GDScript) junto com alunos de TADS. Cenário e
+                personagens ambientados no IFPI — Campus Floriano.
+              </p>
+              <div class="project-tech">
+                <span>Godot</span><span>GDScript</span><span>Pixel Art</span
+                ><span>Game Design</span>
+              </div>
+              <div class="project-links">
+                <span class="project-status">Em desenvolvimento</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- GAME CMD -->
+          <div class="project-card reveal">
+            <div class="project-img">
+              <div
+                class="project-img-bg"
+                style="background: linear-gradient(135deg, #04140a, #0a2a16)"
+              ></div>
+              <div class="carousel-track">
+                <img
+                  class="carousel-slide"
+                  src="./img/projetos/Game-cmd/game-cmd-jogo.png"
+                  alt="Game CMD — jogo rodando no prompt de comando"
+                />
+                <img
+                  class="carousel-slide"
+                  src="./img/projetos/Game-cmd/game-cmd-repo.png"
+                  alt="Game CMD — arquivos do projeto"
+                />
+              </div>
+              <div class="project-img-overlay"></div>
+              <div class="carousel-dots">
+                <span class="carousel-dot active"></span>
+                <span class="carousel-dot"></span>
+              </div>
+              <span class="carousel-label">hover para navegar</span>
+            </div>
+            <div class="project-body">
+              <span class="project-type" style="color: var(--accent3)"
+                >Game • Terror / CMD</span
+              >
+              <h3 class="project-title">Game CMD</h3>
+              <p class="project-desc">
+                Jogo de enigma e terror que roda inteiramente pelo Prompt de
+                Comando, interagindo de verdade com o Windows — clipboard,
+                arquivos e janelas — para criar imersão.
+              </p>
+              <div class="project-tech">
+                <span>Batchfile</span><span>CMD</span><span>PowerShell</span
+                ><span>Game Design</span>
+              </div>
+              <div class="project-links">
+                <a
+                  href="https://github.com/Victor-Sarris/game-cmd"
+                  class="project-link gh"
+                  target="_blank"
+                  rel="external"
+                >
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                      d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2.9-.3 2-.4 3-.4s2.1.1 3 .4c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"
+                    />
+                  </svg>
+                  GitHub
+                </a>
+                <span class="project-status">Em desenvolvimento</span>
               </div>
             </div>
           </div>
@@ -1708,6 +2380,14 @@
               rel="external"
             >
               <span class="icon">◈</span> LinkedIn
+            </a>
+            <a
+              href="https://wa.me/5589994072096"
+              class="contact-link"
+              target="_blank"
+              rel="external"
+            >
+              <span class="icon">|</span> WhatsApp
             </a>
             <a href="#" class="contact-link">
               <span class="icon">↓</span> Baixar CV
@@ -1948,6 +2628,53 @@
         });
         card.addEventListener("mouseleave", () => {
           card.style.transform = "";
+        });
+      });
+
+      // ── CAROUSEL ON HOVER ──
+      document.querySelectorAll(".project-card").forEach((card) => {
+        const track = card.querySelector(".carousel-track");
+        const dots = card.querySelectorAll(".carousel-dot");
+        if (!track) return;
+
+        const slides = track.children;
+        const total = slides.length;
+        let current = 0;
+        let interval = null;
+
+        function goTo(idx) {
+          current = (idx + total) % total;
+          Array.from(slides).forEach((s, i) =>
+            s.classList.toggle("active", i === current),
+          );
+          dots.forEach((d, i) => d.classList.toggle("active", i === current));
+        }
+        goTo(0);
+
+        card.addEventListener("mouseenter", () => {
+          interval = setInterval(() => goTo(current + 1), 1200);
+        });
+        card.addEventListener("mouseleave", () => {
+          clearInterval(interval);
+          goTo(0);
+        });
+      });
+
+      // ── HAMBURGER MENU ──
+      const hamburger = document.getElementById("hamburger");
+      const mobileMenu = document.getElementById("mobileMenu");
+
+      hamburger.addEventListener("click", () => {
+        const isOpen = hamburger.classList.toggle("open");
+        mobileMenu.classList.toggle("open", isOpen);
+        document.body.style.overflow = isOpen ? "hidden" : "";
+      });
+
+      document.querySelectorAll(".mobile-link").forEach((link) => {
+        link.addEventListener("click", () => {
+          hamburger.classList.remove("open");
+          mobileMenu.classList.remove("open");
+          document.body.style.overflow = "";
         });
       });
     </script>
